@@ -1,0 +1,103 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+
+.calculadora {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+#resultado {
+    width: 100%;
+    height: 40px;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    padding: 5px;
+    text-align: right;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.teclado {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+button {
+    padding: 15px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #d0d0d0;
+}
+
+.operador {
+    background-color: #acacac;
+}
+
+.operador_primo {
+    background-color: #acacac;
+}
+
+.limpar {
+    background-color: #e98181;
+    color: white;
+}
+
+.igual {
+    background-color: rgb(129, 192, 221);
+    grid-column: span 2;
+    color: white;
+}
+
+#historico {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+#historico th, #historico td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+#historico th {
+    background-color: #f1f1f1;
+}
+
+.limpar_historico {
+    background-color: #e98181; 
+    color: white;
+    padding: 10px 15px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 15px; 
+    width: 100%;
+    text-align: center;
+}
+
+.limpar_historico:hover {
+    background-color: #d0d0d0;  
+}
+
+.limpar_historico:active {
+    background-color: #d0d0d0; 
+}
