@@ -11,7 +11,8 @@ DESAFIO: Faça com que eles apresentem-se em ordem alfabética.
 const Aventureiro = require("./Aventureiro");
 
 class Guilda{
-    constructor(nome){
+    constructor(id, nome){
+        this.id = id;
         this.nome = nome;
         this.membros =[]; //lista de Aventureiros
     }
