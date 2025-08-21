@@ -27,7 +27,6 @@ router.get("/guildas", function (req, res) {
 /*
  * POST /guildas
  * Cria uma nova guilda
- * Exemplo de body: { "id": 3, "nome": "Nova Guilda", "localizacao": "Vale Verde" }
 */
 router.post("/guildas", function (req, res) {
   try {
@@ -36,12 +35,12 @@ router.post("/guildas", function (req, res) {
     if (!dados.id || !dados.nome) {
       return res.status(400).json({ mensagem: "Os campos não estão completos!" });
     }
+
     let guilda = new Guilda(dados.id, dados.nome, []);
     meuGuildaDAO.add(guilda);
-    res.status(201).json({ mensagem: "Guilda criada com sucesso!"});
-    
-  }catch(error){
-    res.status(500).json({ mensagem: "Erro ao criar guilda."});
+    res.status(201).json({ mensagem: "Guilda criada com sucesso!" });
+  } catch (error) {
+    res.status(500).json({ mensagem: "Erro ao criar guilda." });
   }
 });
 
@@ -52,10 +51,10 @@ router.post("/guildas", function (req, res) {
 router.get("/guildas/:id", function (req, res) {
   try {
     let id = req.params.id;
-    let guilda = meuGuildaDAO.get(id);
+    let retorno = meuGuildaDAO.get(id);
 
-    if (guilda) {
-      res.json(guilda);
+    if (retorno != null) {
+      res.status(200).json(retorno);
     } else {
       res.status(404).json({ mensagem: "Guilda não encontrada." });
     }
@@ -67,19 +66,21 @@ router.get("/guildas/:id", function (req, res) {
 /*
  * PUT /guildas/:id
  * Atualiza apenas o nome da guilda
- * Exemplo body: { "nome": "Novo Nome da Guilda" }
 */
 router.put("/guildas/:id", function (req, res) {
   try {
-    let id = req.params.id;
-    let novosDados = req.body;
+    let { id } = req.params;
+    let dados = req.body;
 
-    let guildaAtualizada = meuGuildaDAO.update(id, novosDados);
+    let guildaAtualizada = meuGuildaDAO.update(id, dados);
 
     if (guildaAtualizada == null) {
       res.status(404).json({ mensagem: "Guilda não encontrada." });
     } else {
-      res.json({ mensagem: "Guilda atualizada com sucesso!", guilda: guildaAtualizada });
+      res.json({
+        mensagem: "Guilda atualizada com sucesso!",
+        guilda: guildaAtualizada,
+      });
     }
   } catch (error) {
     res.status(500).json({ mensagem: "Erro ao atualizar guilda." });
@@ -93,15 +94,21 @@ router.put("/guildas/:id", function (req, res) {
 router.delete("/guildas/:id", function (req, res) {
   try {
     let id = req.params.id;
-    let retorno = meuGuildaDAO.delete(id);
+    let queries = req.query.varQuery;
+    console.log(`Esta é a query que veio na requisição: ${queries} `);
 
-    if (retorno != null) {
-      res.status(200).json({ mensagem: "Guilda removida com sucesso.", guilda: retorno });
+    if (meuGuildaDAO._procuraGuilda(id)) {
+      let retorno = meuGuildaDAO.delete(id);
+      if (retorno != null) {
+        res.status(200).json({ mensagem: "Guilda removida com sucesso!", retorno });
+      } else {
+        res.status(500).json({ mensagem: "Erro ao realizar exclusão." });
+      }
     } else {
       res.status(404).json({ mensagem: "Guilda não encontrada." });
     }
   } catch (erro) {
-    res.status(500).json({ mensagem: "Erro ao excluir guilda. " + erro });
+    res.status(500).json({ mensagem: "Erro ao processar delete. " + erro });
   }
 });
 
@@ -113,16 +120,35 @@ router.delete("/guildas/:id", function (req, res) {
 router.post("/guildas/:id/membros", function (req, res) {
   try {
     let guildaId = req.params.id;
-    let retorno = req.body.aventureiroId;
-    //let {aventureiroId} = req.body;
+    let aventureiroId = req.body.aventureiroId;
 
-    if (retorno != null) {
-      res.status(200).json({ mensagem: `Aventureiro ${aventureiro.nome} recrutado com sucesso para a guilda ${guilda.nome}!`, guilda: retorno });
-    }else {
-      res.status(404).json({ mensagem: "Aventureiro não encontrada." });
+    if (!aventureiroId) {
+      return res.status(400).json({ mensagem: "É necessário informar o aventureiroId." });
     }
+
+    let guilda = meuGuildaDAO.get(guildaId);
+    let aventureiro = meuAveDAO.get(aventureiroId);
+
+    if (!guilda) {
+      return res.status(404).json({ mensagem: "Guilda não encontrada." });
+    }
+
+    if (!aventureiro) {
+      return res.status(404).json({ mensagem: "Aventureiro não encontrado." });
+    }
+
+    let sucesso = guilda.recrutarAventureiro(aventureiro);
+
+    if (!sucesso) {
+      return res.status(400).json({ mensagem: "Aventureiro já faz parte da guilda." });
+    }
+
+    res.status(200).json({
+      mensagem: `Aventureiro ${aventureiro.nome} recrutado com sucesso para a guilda ${guilda.nome}!`,
+      guilda,
+    });
   } catch (erro) {
-    res.status(500).json({ mensagem: "Erro" + erro });
+    res.status(500).json({ mensagem: "Erro ao processar recrutamento. " + erro });
   }
 });
 
