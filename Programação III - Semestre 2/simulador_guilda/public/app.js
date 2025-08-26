@@ -1,44 +1,51 @@
-var baseUrl = 'http://localhost:3000'
+var baseUrl = "http://localhost:3000";
 
-try{
-    //capturar botão
-    let btnGetAventureiro = document.querySelector('#btn-getAventureiro');
-
-    // adicionar ent handler
-    btnGetAventureiro.addEventListener('click', getAventureiro);
-}catch(error){
-    console.log('Erro na criação do eventos:' + error);
+try {
+  //capturar botão
+  let btnGetAventueiro = document.querySelector("#btn-getAventureiro");
+  //adicionar event handler
+  btnGetAventueiro.addEventListener("click", getAventureiros);
+} catch (error) {
+  console.log("Erro na criação de evento:" + error);
 }
 
-// await fetch -> espera a resposta (síncrono)
+async function getAventureiros(event) {
+  try {
+    let path = "/aventureiro";
+    let response =  await fetch(baseUrl + path);
+    let aventureiros = await response.json();
+    console.log(JSON.stringify(aventureiros));
+    renderizaAventureiros(aventureiros);
 
-async function getAventureiro(event){
-    try{
-        let path = '/aventureiro';
-        let response = await fetch(baseUrl + path);
-        let aventureiros = await response.json();
-        console.log(JSON.stringify(aventureiros));
 
-    }catch(error){
-        console.log(`Erro getAventureiros: ${error}`);
-    }  
+  } catch (error) {
+    console.log(`Erro getAventureiros: ${error}`);
+  }
 }
 
-/*renderiza no html todos os aventureiros obtidos
+/**Renderiza no HTML todos os aventureiros obtidos
  * @param aventureiros JSON de aventureiros
-*/
+ */
 function renderizaAventureiros(aventureiros){
-    let sectinAventureiro = document.querySelector('#section-aventureiro');
-    aventureiros.array.forEach(a => {
-        let card = criaCardAventureiro(a);
+    //para cada aventueiro
+    let sectionAventureiro = document.querySelector('#section-aventureiro');
+    aventureiros.forEach(a => {
+        let card = criaCardAventueiro(a);
         let divCard = document.createElement('div');
         divCard.id = "cardAventureiro" + a.id;
         divCard.innerHTML = card;
-        sectinAventureiro.appendChild(divCard);
+        sectionAventureiro.appendChild(divCard);
     });
+        //criar um card
+    //para cada card
+        //adicionar no elemento html
 }
 
-function criaCardAventureiro(aventureiro){
-    let card = `<div class="card-aventureiro"> <p>${aventureiro.id} - ${aventureiro.nome} - ${aventureiro.classe} - ${aventureiro.nivel} - ${aventureiro.guildas}</p> </div>`;
+function criaCardAventueiro(aventueiro){
+    /**"id":1,"nome":"Aribaldo","classe":"Pipoqueiro","nivel":1 */
+    let card = `<div class=card-aventureiro> 
+     <p>${aventueiro.id} - ${aventueiro.nome} Classe: ${aventueiro.classe} </p>
+     </div> `; 
 
+     return card;
 }
