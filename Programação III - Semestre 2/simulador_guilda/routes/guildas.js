@@ -7,6 +7,10 @@ let Guilda = require("../classes/Guilda");
 let AventureiroDAO = require("../modelo/AventureiroDAO");
 let Aventureiro = require("../classes/Aventureiro");
 
+// instanciando os DAOs primeiro
+let meuGuildaDAO = new GuildaDAO();
+let meuAveDAO = new AventureiroDAO();
+
 // aventureiros teste
 let a1 = new Aventureiro(1, "Aventureiro1", "Guerreiro", 5, []);
 let a2 = new Aventureiro(2, "Aventureiro2", "Arqueira", 3, []);
@@ -14,9 +18,6 @@ let a2 = new Aventureiro(2, "Aventureiro2", "Arqueira", 3, []);
 // adiciona ao DAO (para poder buscar por ID depois)
 meuAveDAO.add(a1);
 meuAveDAO.add(a2);
-
-let meuGuildaDAO = new GuildaDAO();
-let meuAveDAO = new AventureiroDAO();
 
 // objetos de exemplo
 let g1 = new Guilda(1, "Guilda 1", [a1]);

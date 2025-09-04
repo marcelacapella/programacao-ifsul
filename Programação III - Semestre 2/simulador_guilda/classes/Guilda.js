@@ -32,3 +32,5 @@ class Guilda {
         return strApresenta;
     }
 }
+
+module.exports = Guilda;
